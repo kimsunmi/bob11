@@ -126,6 +126,7 @@ if($_GET['page'] == "upload"){
 }
 if($_GET['page'] == "download"){
     $filter_file = htmlspecialchars($_GET['file']);
+    $filter_file = basename($filter_file);
     $content = file_get_contents("./upload/{$filter_file}");
 
     if(!$content){
