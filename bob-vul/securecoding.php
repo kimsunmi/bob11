@@ -96,7 +96,7 @@ if($_GET['page'] == "join"){
     
     if(!$result['id'] && check_pw){
         $hash_pw = hash("sha256",$input['pw']);
-        $query = "insert into member values('$filter_id','$filter_email','$hash_pw','user')";
+        $query = sprintf("insert into member values('%s','%s','%s','user')",$filter_id,$filter_email,$hash_pw);
         mysqli_query($db,$query);
         exit("<script>alert(`join ok`);location.href=`/`;</script>");
     }
