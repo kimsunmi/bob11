@@ -94,7 +94,7 @@ if($_GET['page'] == "join"){
     # check pw security level
     $cheack_pw = passwordCheck($input['pw']);
     
-    if(!$result['id'] && check_pw){
+    if(!isset($result['id']) && check_pw){
         $hash_pw = hash("sha256",$input['pw']);
         $query = sprintf("insert into member values('%s','%s','%s','user')",$filter_id,$filter_email,$hash_pw);
         mysqli_query($db,$query);
