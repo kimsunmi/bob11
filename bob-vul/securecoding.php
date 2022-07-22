@@ -83,7 +83,7 @@ if($_GET['page'] == "join"){
  
     # input filter
     $filter_id = mysqli_real_escape_string($db, $input['id']);
-    // $filter_pw = mysqli_real_escape_string($db, $input['pw']);
+    $filter_pw = mysqli_real_escape_string($db, $input['pw']);
     $filter_email=filter_var($input['email'], FILTER_SANITIZE_EMAIL);
     
     $query = sprintf("select id from member where id='%s'",$filter_id);
@@ -92,10 +92,10 @@ if($_GET['page'] == "join"){
     $result = mysqli_fetch_array($row);
     
     # check pw security level
-    $cheack_pw = passwordCheck($input['pw']);
+    $cheack_pw = passwordCheck($filter_pw);
     
     if(!isset($result['id']) && check_pw){
-        $hash_pw = hash("sha256",$input['pw']);
+        $hash_pw = hash("sha256",$filter_pw);
         $query = sprintf("insert into member values('%s','%s','%s','user')",$filter_id,$filter_email,$hash_pw);
         mysqli_query($db,$query);
         exit("<script>alert(`join ok`);location.href=`/`;</script>");
@@ -106,10 +106,14 @@ if($_GET['page'] == "join"){
 }
 
 if($_GET['page'] == "upload"){
-    if(!$_SESSION['id']){
+
+    $filter_id = $_SESSION['id'];
+    if(!isset($filter_id)){
         exit("<script>alert(`login plz`);history.go(-1);</script>");
     }
-    if($_FILES['fileToUpload']['size'] >= 1024 * 1024 * 1){ exit("<script>alert(`file is too big`);history.go(-1);</script>"); } // file size limit(1MB). do not remove it.
+    if($_FILES['fileToUpload']['size'] >= 1024 * 1024 * 1){ 
+        exit("<script>alert(`file is too big`);history.go(-1);</script>"); 
+    } // file size limit(1MB). do not remove it.
     $extension = explode(".",$_FILES['fileToUpload']['name'])[1];
     if($extension == "txt" || $extension == "png"){
         system("cp {$_FILES['fileToUpload']['tmp_name']} ./upload/{$_FILES['fileToUpload']['name']}");
