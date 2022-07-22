@@ -115,6 +115,7 @@ if($_GET['page'] == "upload"){
         exit("<script>alert(`file is too big`);history.go(-1);</script>"); 
     } // file size limit(1MB). do not remove it.
     $extension = explode(".",$_FILES['fileToUpload']['name'])[1];
+    
     if($extension == "txt" || $extension == "png"){
         system("cp {$_FILES['fileToUpload']['tmp_name']} ./upload/{$_FILES['fileToUpload']['name']}");
         exit("<script>alert(`upload ok`);location.href=`/`;</script>");
@@ -124,7 +125,9 @@ if($_GET['page'] == "upload"){
     }
 }
 if($_GET['page'] == "download"){
-    $content = file_get_contents("./upload/{$_GET['file']}");
+    $filter_file = htmlspecialchars($_GET['file']);
+    $content = file_get_contents("./upload/{$filter_file}");
+
     if(!$content){
         exit("<script>alert(`not exists file`);history.go(-1);</script>");
     }
@@ -143,7 +146,6 @@ if($_GET['page'] == "admin"){
         $query = sprintf("select id from member where id='%s'",$session_id);
         $row = mysqli_query($db,$query);
         $result = mysqli_fetch_array($row);
-    
     
         if($result['id'] == "admin"){
             echo htmlspecialchars(file_get_contents("/flag")); // do not remove it.
